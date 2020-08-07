@@ -28,7 +28,7 @@ def send_slack_message(token, channel, message):
 
 
 def main():
-    binary_key = bytes(open("kube_secret.txt", "r").read().rstrip(), "utf-8")
+    binary_key = bytes(os.environ["KUBE_SECRET"], "utf-8")
     channel = decrypt_something(binary_key, ENCRYPT_CHANNEL).decode("utf-8")
     token = decrypt_something(binary_key, ENCRYPT_SLACK_TOKEN).decode("utf-8")
     message = "Sending this message from {}".format(POD_NAME)
