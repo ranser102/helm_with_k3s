@@ -1,9 +1,16 @@
-pipeline {  
+pipeline {
     environment {
         registry = "eransery/py_k8s"
         registryCredential = 'erandockerhub'
-    }  
-    agent any  stages {
+    }
+    agent any
+
+    stages {
+        stage('Hello') {
+            steps {
+                echo 'Hello World'
+            }
+        }
         stage('Building image') {
             steps{
                 script {
