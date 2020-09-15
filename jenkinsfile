@@ -14,7 +14,7 @@ pipeline {
         stage('Building image') {
             steps{
                 script {
-                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                    dockerImage = docker.build registry + ":latest"
                 }
             }
         }
@@ -29,7 +29,7 @@ pipeline {
         } 
         stage('Cleaning up') { 
             steps { 
-                sh "docker rmi $registry:$BUILD_NUMBER" 
+                sh "docker rmi $registry:latest" 
             }
         }        
         stage('Check k8s info') {
@@ -46,16 +46,6 @@ pipeline {
                 }
             }
         }         
-        stage('Delete app using helm ') {
-            steps {
-                script {
-                    namespace = 'eransery'
-                    release = 'pod_cox_sery'
-                    echo "Deleting ${release} in ${namespace} if deployed"
-                    sh "[ -z \"\$(helm ls --short ${release} 2>/dev/null)\" ] || helm delete --purge ${release}"
-                }
-            }
-        }        
         stage('Install app using helm chart') {
             steps {
                 script {
@@ -64,7 +54,9 @@ pipeline {
                     echo "Installing ${release} in ${namespace}"
                     
                     sh """
-                        helm upgrade --install --namespace ${namespace} ${release} 
+                        helm uninstall pod-eransery-0.1.0.tgz
+                        helm package pod-eransery/
+                        helm install --namespace ${namespace} pod-eransery-0.1.0.tgz pod-eransery
                     """
                     sh "sleep 5"
                 }

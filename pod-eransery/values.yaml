@@ -6,6 +6,7 @@ replicaCount: 1
 imagePullSecrets:
 image:
   repository: registry-1.docker.io/eransery/py_k8s
+  tag: latest
   pullPolicy: Always
 service:
   type: ClusterIP
