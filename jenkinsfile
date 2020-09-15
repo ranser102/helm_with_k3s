@@ -50,13 +50,12 @@ pipeline {
             steps {
                 script {
                     namespace = 'eransery'
-                    release = 'pod_eransery'
+                    release = 'pod-eransery'
                     echo "Installing ${release} in ${namespace}"
                     
                     sh """
-                        helm uninstall pod-eransery-0.1.0.tgz
                         helm package pod-eransery/
-                        helm install --namespace ${namespace} pod-eransery-0.1.0.tgz pod-eransery
+                        helm upgrade --install --namespace ${namespace} pod-eransery-0.1.0.tgz pod-eransery
                     """
                     sh "sleep 5"
                 }
