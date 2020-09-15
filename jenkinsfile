@@ -1,0 +1,65 @@
+pipeline {
+    environment {
+        registry = "eransery/py_k8s"
+        registryCredential = 'erandockerhub'
+    }
+    agent any
+
+    stages {
+        stage('Hello') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+        stage('Building image') {
+            steps{
+                script {
+                    dockerImage = docker.build registry + ":latest"
+                }
+            }
+        }
+        stage('Push image to hub.docker.io') { 
+            steps { 
+                script { 
+                    docker.withRegistry( '', registryCredential ) { 
+                        dockerImage.push() 
+                    }
+                } 
+            }
+        } 
+        stage('Cleaning up') { 
+            steps { 
+                sh "docker rmi $registry:latest" 
+            }
+        }        
+        stage('Check k8s info') {
+            steps {
+                sh "kubectl cluster-info"
+            }
+        }
+        stage('create namespcae') {
+            steps {
+                script {
+                    namespace = 'eransery'
+                    echo "Creating namespace ${namespace} if needed"
+                    sh "[ ! -z \"\$(kubectl get ns ${namespace} -o name 2>/dev/null)\" ] || kubectl create ns ${namespace}"
+                }
+            }
+        }         
+        stage('Install app using helm chart') {
+            steps {
+                script {
+                    namespace = 'eransery'
+                    release = 'pod-eransery'
+                    echo "Installing ${release} in ${namespace}"
+                    
+                    sh """
+                        helm package pod-eransery/
+                        helm upgrade --install --namespace ${namespace} pod-eransery-0.1.0.tgz pod-eransery
+                    """
+                    sh "sleep 5"
+                }
+            }
+        }        
+    }
+}
