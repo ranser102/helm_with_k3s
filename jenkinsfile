@@ -60,7 +60,7 @@ pipeline {
             steps {
                 script {
                     namespace = 'eransery'
-                    release = 'pod_cox_sery'
+                    release = 'pod_eransery'
                     echo "Installing ${release} in ${namespace}"
                     
                     sh """
