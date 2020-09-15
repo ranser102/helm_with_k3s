@@ -20,4 +20,5 @@ resources:
     cpu: 100m
     memory: 128Mi
 
-
+secrets:
+  kubeSecret: "Content of KUBE_SECRET.txt"

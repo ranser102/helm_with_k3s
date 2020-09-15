@@ -19,7 +19,13 @@ spec:
         release: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ .Chart.Name }}
+        - env:
+          - name: KUBE_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: KUBE_SECRET.txt
+          name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
