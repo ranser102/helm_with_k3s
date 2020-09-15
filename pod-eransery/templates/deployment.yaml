@@ -11,7 +11,7 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      name: pod-eransery-app  
+      app: pod-eransery-app
   template:
     metadata:
       labels:
