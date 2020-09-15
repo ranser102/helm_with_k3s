@@ -1,13 +1,15 @@
-pipeline {  environment {
-    registry = "eransery/py_k8s"
-    registryCredential = 'erandockerhub'
-  }  agent any  stages {
-    stage('Building image') {
-      steps{
-        script {
-          docker.build registry + ":$BUILD_NUMBER"
+pipeline {  
+    environment {
+        registry = "eransery/py_k8s"
+        registryCredential = 'erandockerhub'
+    }  
+    agent any  stages {
+        stage('Building image') {
+            steps{
+                script {
+                docker.build registry + ":$BUILD_NUMBER"
+                }
+            }
         }
-      }
     }
-  }
 }
